@@ -6,13 +6,13 @@
 <title>메리 포엠스마스</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Song+Myung&family=Gowun+Batang:wght@400;700&family=Nanum+Pen+Script&family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Song+Myung&family=Gowun+Batang:wght@400;700&family=Nanum+Pen+Script&family=Diphylleia&family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#f8ebe7; --paper:#fffaf8; --ink:#2e1d1b; --muted:#8a625c;
   --green:#7d1d2c; --green-d:#5c1320; --red:#c0392b; --red-d:#93261f; --gold:#b8893a;
   --line:#efd4cd; --shadow:0 14px 34px rgba(90,25,25,.14);
-  --script:'Great Vibes',cursive; --title:'Song Myung','Gowun Batang',serif;
+  --script:'Great Vibes',cursive; --title:'Diphylleia','Song Myung',serif; --gothic:'Malgun Gothic','맑은 고딕','Noto Sans KR','Apple SD Gothic Neo',sans-serif;
   --serif:'Gowun Batang','Noto Serif KR',serif; --sans:'Noto Sans KR','Apple SD Gothic Neo',sans-serif;
   --pen:'Nanum Pen Script',cursive;
 }
@@ -21,21 +21,24 @@ html,body{margin:0;height:100%}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);overflow:hidden;
   background-image:radial-gradient(circle at 12% 0%,rgba(255,248,246,.95),transparent 45%),radial-gradient(circle at 100% 100%,rgba(160,35,45,.16),transparent 55%);}
 button{font:inherit;-webkit-tap-highlight-color:transparent;cursor:pointer}
-.snow{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
-.snow i{position:absolute;top:-10px;width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 4px rgba(170,90,90,.35);opacity:.9;animation:fall linear infinite}
-@keyframes fall{to{transform:translate3d(30px,105vh,0)}}
+.snow{position:fixed;inset:0;pointer-events:none;z-index:50;overflow:hidden}
+.snow i{position:absolute;top:-30px;display:block;border-radius:50%;background:#fff;
+  box-shadow:0 0 0 1px rgba(192,57,43,.18),0 0 6px rgba(140,40,40,.45);opacity:.95;animation:fall linear infinite;will-change:transform}
+.snow i.f{background:none;box-shadow:none;border-radius:0;color:#fff;line-height:1;font-style:normal;font-family:sans-serif;
+  text-shadow:0 0 2px rgba(140,40,40,.75),0 0 6px rgba(140,40,40,.4)}
+@keyframes fall{0%{transform:translate3d(0,0,0) rotate(0)}25%{transform:translate3d(18px,27vh,0) rotate(90deg)}50%{transform:translate3d(-10px,54vh,0) rotate(180deg)}75%{transform:translate3d(16px,81vh,0) rotate(270deg)}100%{transform:translate3d(0,108vh,0) rotate(360deg)}}
 .app{position:relative;z-index:1;height:100vh;height:100dvh;display:flex;flex-direction:column;padding:10px 20px 16px;max-width:1500px;margin:0 auto}
 header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;padding:0 4px 8px;flex:none}
 .brand{display:flex;align-items:baseline;gap:18px;flex-wrap:wrap}
 .brand .en{font-family:var(--script);font-size:clamp(40px,4.6vw,64px);line-height:1;color:var(--green)}
-.brand h1{margin:0;font-family:var(--title);font-weight:400;font-size:clamp(26px,2.8vw,38px);color:var(--red)}
-.brand .sub{font-family:var(--serif);font-weight:700;font-size:clamp(15px,1.5vw,19px);color:var(--muted)}
+.brand h1{margin:0;font-family:var(--title);font-weight:400;font-size:clamp(32px,3.4vw,46px);color:var(--red);letter-spacing:.02em}
+.brand .sub{font-family:var(--pen);font-weight:400;font-size:clamp(25px,2.5vw,33px);color:var(--muted)}
 .credit{font-family:var(--title);font-size:clamp(16px,1.6vw,21px);color:var(--green);white-space:nowrap;padding-bottom:6px}
 .garland{height:16px;margin:0 0 12px;flex:none;
   background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='16'%3E%3Cpath d='M0 2Q30 14 60 2' fill='none' stroke='%23b38a3d' stroke-width='1.4'/%3E%3Ccircle cx='15' cy='10' r='3' fill='%23a3302b'/%3E%3Ccircle cx='45' cy='10' r='3' fill='%237d1d2c'/%3E%3Cpath d='M30 6l1.6 3.4 3.6.4-2.7 2.5.8 3.6L30 14l-3.3 1.9.8-3.6-2.7-2.5 3.6-.4z' fill='%23b38a3d'/%3E%3C/svg%3E") repeat-x}
 main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px}
 .panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);min-height:0;display:flex;flex-direction:column;padding:16px;position:relative;overflow:hidden}
-.ptitle{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-weight:700;font-size:clamp(17px,1.6vw,21px);margin:0 0 12px;flex:none}
+.ptitle{display:flex;align-items:center;gap:10px;font-family:var(--gothic);font-weight:700;font-size:clamp(17px,1.6vw,21px);margin:0 0 12px;flex:none}
 .ptitle b{display:inline-flex;width:30px;height:30px;border-radius:50%;background:var(--green);color:#fffaf2;align-items:center;justify-content:center;font-family:var(--sans);font-size:15px}
 /* camera */
 .stage{flex:1;min-height:0;position:relative;border-radius:12px;overflow:hidden;background:#2c1416;display:flex;align-items:center;justify-content:center}
@@ -45,7 +48,7 @@ main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.2fr) minm
 .cam canvas.overlay{position:absolute;inset:0;width:100%;height:100%;display:block}
 .stage .msg{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#fff6e6;text-align:center;padding:20px;font-size:clamp(16px,1.6vw,20px);line-height:1.6;background:#2c1416}
 .count{position:absolute;inset:0;display:none;align-items:center;justify-content:center;font-family:var(--title);font-size:clamp(120px,18vw,220px);color:#fff;text-shadow:0 6px 30px rgba(0,0,0,.45);pointer-events:none}
-.count.on{display:flex;animation:pop .9s ease-out both}
+.count.on{display:flex;animation:pop 1s ease-out both}
 @keyframes pop{0%{transform:scale(1.5);opacity:0}25%{opacity:1}100%{transform:scale(.85);opacity:.15}}
 .flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
 .flash.on{animation:flash .5s ease-out}
@@ -164,11 +167,14 @@ main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.2fr) minm
 /* =====================================================================
    메리 포엠스마스 — 설정 (여기만 고치면 됩니다)
    ===================================================================== */
-var CREDIT        = '수내고등학교 도서부가 드려요';   // 영수증 맨 아래 · 화면 오른쪽 위
+var CREDIT        = '';   // 영수증 맨 아래 · 화면 오른쪽 위에 넣을 문구 (비워 두면 표시 안 함)
 var SUB_TITLE     = '산타 모자 쓰고 찰칵, 시 한 줄 선물';
 var AUTO_HOME_SEC = 45;      // 출력 후 이 시간(초)이 지나면 처음 화면으로
 var COUNTDOWN     = 3;       // 사진 찍기 전 카운트다운(초)
 var COPY_LINES    = 3;       // 필사 밑줄 칸 수
+var VOICE_ON      = true;    // 카운트다운 때 한국어 음성으로 숫자 읽기
+var COUNT_WORDS   = ['하나','둘','셋'];   // 읽을 말 (예: ['일','이','삼'] 또는 ['셋','둘','하나'])
+var SHUTTER_ON    = true;    // 찍을 때 '찰칵' 효과음
 var AUTO_FACE     = true;    // 얼굴을 찾아 모자를 자동으로 씌우기 (안 되면 손으로 끌어서 맞춤)
 
 /* 영수증 프린터 */
@@ -249,11 +255,14 @@ var source='video';          // 'video' (실시간) 또는 'still' (카메라 �
 var stillImg=null;
 
 $('subTitle').textContent=SUB_TITLE;
-$('credit').textContent=CREDIT;
+$('credit').textContent=CREDIT;if(!CREDIT)$('credit').classList.add('hidden');
 
 /* 눈 내리기 */
-(function(){var s=$('snow'),h='';for(var i=0;i<26;i++){var l=Math.random()*100,d=8+Math.random()*10,dl=-Math.random()*18,sz=3+Math.random()*5;
- h+='<i style="left:'+l+'%;width:'+sz+'px;height:'+sz+'px;animation-duration:'+d+'s;animation-delay:'+dl+'s"></i>';}s.innerHTML=h;})();
+var SNOW_COUNT=40;   // 화면에 내리는 눈송이 수 (많을수록 풍성, 태블릿이 느려지면 줄이기)
+(function(){var s=$('snow'),h='';for(var i=0;i<SNOW_COUNT;i++){var l=Math.random()*100,d=9+Math.random()*11,dl=-Math.random()*20;
+ if(i%3===0){var fs=14+Math.random()*12;h+='<i class="f" style="left:'+l+'%;font-size:'+fs.toFixed(0)+'px;animation-duration:'+d+'s;animation-delay:'+dl+'s">❄</i>';}
+ else{var sz=5+Math.random()*6;h+='<i style="left:'+l+'%;width:'+sz.toFixed(1)+'px;height:'+sz.toFixed(1)+'px;animation-duration:'+d+'s;animation-delay:'+dl+'s"></i>';}}
+ s.innerHTML=h;})();
 
 /* ---------------- 기분 고르기 ---------------- */
 $('moods').innerHTML=MOODS.map(function(m,i){return '<button type="button" class="mood" data-i="'+i+'"><b>'+esc(m.label)+'</b><span>'+esc(m.desc)+'</span></button>';}).join('');
@@ -358,7 +367,7 @@ function showStill(img){
  $('fileBtn').classList.add('hidden');$('useStillBtn').classList.remove('hidden');$('retakeBtn').classList.remove('hidden');
  $('camHint').textContent='모자를 끌어서 머리 위에 올려 주세요';
 }
-$('useStillBtn').onclick=function(){if(stillImg)capture(stillImg,stillImg.naturalWidth,stillImg.naturalHeight,false);};
+$('useStillBtn').onclick=function(){audioCtx();if(stillImg){shutter();capture(stillImg,stillImg.naturalWidth,stillImg.naturalHeight,false);}};
 
 /* 가운데를 4:3으로 잘라 그리기 */
 function drawCover(ctx,src,sw,sh,W,H,mirror){
@@ -444,14 +453,45 @@ function faceLoop(){
 }
 
 /* ---------------- 촬영 ---------------- */
+/* 음성 (Fully Kiosk 음성 기능 → 브라우저 음성 순서로 시도) */
+function koVoice(){try{var vs=speechSynthesis.getVoices()||[];for(var i=0;i<vs.length;i++)if(/^ko/i.test(vs[i].lang))return vs[i];}catch(e){}return null;}
+try{if(window.speechSynthesis)speechSynthesis.onvoiceschanged=function(){koVoice();};}catch(e){}
+function speak(t){
+ if(!VOICE_ON||!t)return;
+ try{if(typeof fully!=='undefined'&&fully&&typeof fully.textToSpeech==='function'){try{fully.textToSpeech(t,'ko');}catch(e){fully.textToSpeech(t);}return;}}catch(e){}
+ try{if(window.speechSynthesis&&window.SpeechSynthesisUtterance){speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang='ko-KR';u.rate=1.05;var v=koVoice();if(v)u.voice=v;speechSynthesis.speak(u);}}catch(e){}
+}
+/* '찰칵' 셔터 효과음 (소리 파일 없이 직접 만들어 냄) */
+var actx=null;
+function audioCtx(){try{if(!actx){var C=window.AudioContext||window.webkitAudioContext;if(C)actx=new C();}if(actx&&actx.state==='suspended')actx.resume();}catch(e){}return actx;}
+function shutter(){
+ if(!SHUTTER_ON)return;var c=audioCtx();if(!c)return;
+ try{
+  var t=c.currentTime+.01;
+  [0,.085].forEach(function(dt,i){
+   var n=Math.floor(c.sampleRate*.07),buf=c.createBuffer(1,n,c.sampleRate),d=buf.getChannelData(0);
+   for(var k=0;k<n;k++)d[k]=(Math.random()*2-1)*Math.pow(1-k/n,3);
+   var s=c.createBufferSource();s.buffer=buf;
+   var f=c.createBiquadFilter();f.type='bandpass';f.frequency.value=i?2300:3400;f.Q.value=.9;
+   var g=c.createGain();g.gain.value=i?.7:1;
+   s.connect(f);f.connect(g);g.connect(c.destination);s.start(t+dt);
+  });
+  var o=c.createOscillator(),og=c.createGain();o.type='square';
+  o.frequency.setValueAtTime(190,t);o.frequency.exponentialRampToValueAtTime(55,t+.06);
+  og.gain.setValueAtTime(.22,t);og.gain.exponentialRampToValueAtTime(.001,t+.07);
+  o.connect(og);og.connect(c.destination);o.start(t);o.stop(t+.08);
+ }catch(e){}
+}
 $('snapBtn').onclick=function(){
  if(busy||!state.mood)return;busy=true;$('snapBtn').disabled=true;
- var n=COUNTDOWN,c=$('count');
+ audioCtx();   // 버튼을 누를 때 소리 기능을 깨워 둠
+ var i=0,total=COUNTDOWN,c=$('count');
  (function tick(){
-  if(n<=0){c.classList.remove('on');c.textContent='';
-   var v=$('video');$('flash').classList.remove('on');void $('flash').offsetWidth;$('flash').classList.add('on');
+  if(i>=total){c.classList.remove('on');c.textContent='';
+   var v=$('video');shutter();$('flash').classList.remove('on');void $('flash').offsetWidth;$('flash').classList.add('on');
    capture(v,v.videoWidth,v.videoHeight,true);busy=false;$('snapBtn').disabled=false;return;}
-  c.textContent=n;c.classList.remove('on');void c.offsetWidth;c.classList.add('on');n--;setTimeout(tick,900);
+  i++;c.textContent=i;speak(COUNT_WORDS[i-1]||String(i));
+  c.classList.remove('on');void c.offsetWidth;c.classList.add('on');setTimeout(tick,1000);
  })();
 };
 function capture(src,sw,sh,mirror){
@@ -520,7 +560,7 @@ function renderReceipt(){
    var p=POEMS[state.poemKey],all=p.text+p.title+p.poet+state.lucky+CREDIT+SUB_TITLE+state.mood.label+'메리포엠스마스오늘의기분당신에게도착한시마음에남는한줄필사골라따라써보세요필사한사람행운「」—·,.';
    Promise.all([
     document.fonts.load("80px 'Great Vibes'",'Merry Poem-mas Christmas & Happy New Year'),
-    document.fonts.load("46px 'Song Myung'",all),document.fonts.load("700 26px 'Gowun Batang'",all),
+    document.fonts.load("46px 'Diphylleia'",all),document.fonts.load("46px 'Song Myung'",all),document.fonts.load("700 26px 'Gowun Batang'",all),
     document.fonts.load("40px 'Nanum Pen Script'",all),document.fonts.load("700 17px 'Noto Sans KR'",all),document.fonts.load("500 17px 'Noto Sans KR'",all)
    ]).then(go,go);
    setTimeout(go,3000);
@@ -595,7 +635,7 @@ function semanticLines(s,maxW,measure){
 function drawReceipt(){
  var W=576,P=24,tmp=document.createElement('canvas');tmp.width=W;tmp.height=6000;
  var ctx=tmp.getContext('2d'),y=0,poem=POEMS[state.poemKey];
- var SERIF="'Gowun Batang','Noto Serif KR',serif",SANS="'Noto Sans KR',sans-serif",PEN="'Nanum Pen Script',cursive",SCRIPT="'Great Vibes',cursive",TITLE="'Song Myung','Gowun Batang',serif";
+ var SERIF="'Gowun Batang','Noto Serif KR',serif",SANS="'Noto Sans KR',sans-serif",PEN="'Nanum Pen Script',cursive",SCRIPT="'Great Vibes',cursive",TITLE="'Diphylleia','Song Myung',serif";
  ctx.fillStyle='#fff';ctx.fillRect(0,0,W,tmp.height);ctx.fillStyle='#000';ctx.strokeStyle='#000';
  ctx.textBaseline='top';ctx.textAlign='center';ctx.lineCap='round';ctx.lineJoin='round';
  function c(s,f,lh){ctx.font=f;ctx.textAlign='center';ctx.fillText(s,W/2,y);y+=lh;}
@@ -625,8 +665,8 @@ function drawReceipt(){
  // 머리말
  garland();
  c('Merry Poem-mas',"84px "+SCRIPT,88);
- c('메리 포엠스마스',"46px "+TITLE,60);
- fit(SUB_TITLE,19,"700 {px}px "+SERIF,40);
+ y+=4;   // (영수증에는 한글 제목 '메리 포엠스마스'를 넣지 않음)
+ fit(SUB_TITLE,36,"{px}px "+PEN,46);
  divider();y+=10;
  // 사진
  var pw=W-P*2-16,ph=Math.round(pw*PHOTO_H/PHOTO_W),px=(W-pw)/2;
@@ -665,7 +705,7 @@ function drawReceipt(){
  y=bt+bh+30;
  // 맺음
  c('Merry Christmas & Happy New Year',"36px "+SCRIPT,48);
- fit(CREDIT,30,"{px}px "+TITLE,46);
+ if(CREDIT)fit(CREDIT,30,"{px}px "+TITLE,46);
  snowDots();y+=10;
  var out=document.createElement('canvas');out.width=W;out.height=y;out.getContext('2d').drawImage(tmp,0,0);
  return out;
