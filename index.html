@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>메리 포엠스마스</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Song+Myung&family=Gowun+Batang:wght@400;700&family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;500;700&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f8ebe7; --paper:#fffaf8; --ink:#2e1d1b; --muted:#8a625c;
+  --green:#7d1d2c; --green-d:#5c1320; --red:#c0392b; --red-d:#93261f; --gold:#b8893a;
+  --line:#efd4cd; --shadow:0 14px 34px rgba(90,25,25,.14);
+  --script:'Great Vibes',cursive; --title:'Song Myung','Gowun Batang',serif;
+  --serif:'Gowun Batang','Noto Serif KR',serif; --sans:'Noto Sans KR','Apple SD Gothic Neo',sans-serif;
+  --pen:'Nanum Pen Script',cursive;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);overflow:hidden;
+  background-image:radial-gradient(circle at 12% 0%,rgba(255,248,246,.95),transparent 45%),radial-gradient(circle at 100% 100%,rgba(160,35,45,.16),transparent 55%);}
+button{font:inherit;-webkit-tap-highlight-color:transparent;cursor:pointer}
+.snow{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.snow i{position:absolute;top:-10px;width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 4px rgba(170,90,90,.35);opacity:.9;animation:fall linear infinite}
+@keyframes fall{to{transform:translate3d(30px,105vh,0)}}
+.app{position:relative;z-index:1;height:100vh;height:100dvh;display:flex;flex-direction:column;padding:10px 20px 16px;max-width:1500px;margin:0 auto}
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;padding:0 4px 8px;flex:none}
+.brand{display:flex;align-items:baseline;gap:18px;flex-wrap:wrap}
+.brand .en{font-family:var(--script);font-size:clamp(40px,4.6vw,64px);line-height:1;color:var(--green)}
+.brand h1{margin:0;font-family:var(--title);font-weight:400;font-size:clamp(26px,2.8vw,38px);color:var(--red)}
+.brand .sub{font-family:var(--serif);font-weight:700;font-size:clamp(15px,1.5vw,19px);color:var(--muted)}
+.credit{font-family:var(--title);font-size:clamp(16px,1.6vw,21px);color:var(--green);white-space:nowrap;padding-bottom:6px}
+.garland{height:16px;margin:0 0 12px;flex:none;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='16'%3E%3Cpath d='M0 2Q30 14 60 2' fill='none' stroke='%23b38a3d' stroke-width='1.4'/%3E%3Ccircle cx='15' cy='10' r='3' fill='%23a3302b'/%3E%3Ccircle cx='45' cy='10' r='3' fill='%237d1d2c'/%3E%3Cpath d='M30 6l1.6 3.4 3.6.4-2.7 2.5.8 3.6L30 14l-3.3 1.9.8-3.6-2.7-2.5 3.6-.4z' fill='%23b38a3d'/%3E%3C/svg%3E") repeat-x}
+main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);min-height:0;display:flex;flex-direction:column;padding:16px;position:relative;overflow:hidden}
+.ptitle{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-weight:700;font-size:clamp(17px,1.6vw,21px);margin:0 0 12px;flex:none}
+.ptitle b{display:inline-flex;width:30px;height:30px;border-radius:50%;background:var(--green);color:#fffaf2;align-items:center;justify-content:center;font-family:var(--sans);font-size:15px}
+/* camera */
+.stage{flex:1;min-height:0;position:relative;border-radius:12px;overflow:hidden;background:#2c1416;display:flex;align-items:center;justify-content:center}
+.cam{position:relative;height:100%;max-width:100%;aspect-ratio:4/3;overflow:hidden;border-radius:8px;touch-action:none}
+.cam video,.cam canvas.still{position:absolute;inset:0;width:100%;height:100%;display:block}
+.cam video{object-fit:cover;transform:scaleX(-1)}
+.cam canvas.overlay{position:absolute;inset:0;width:100%;height:100%;display:block}
+.stage .msg{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#fff6e6;text-align:center;padding:20px;font-size:clamp(16px,1.6vw,20px);line-height:1.6;background:#2c1416}
+.count{position:absolute;inset:0;display:none;align-items:center;justify-content:center;font-family:var(--title);font-size:clamp(120px,18vw,220px);color:#fff;text-shadow:0 6px 30px rgba(0,0,0,.45);pointer-events:none}
+.count.on{display:flex;animation:pop .9s ease-out both}
+@keyframes pop{0%{transform:scale(1.5);opacity:0}25%{opacity:1}100%{transform:scale(.85);opacity:.15}}
+.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+.flash.on{animation:flash .5s ease-out}
+@keyframes flash{0%{opacity:1}100%{opacity:0}}
+.hattools{position:absolute;left:10px;right:10px;bottom:10px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap;pointer-events:none}
+.hattools button{pointer-events:auto;border:1px solid rgba(255,250,242,.7);background:rgba(45,15,18,.55);color:#fff;border-radius:999px;padding:7px 14px;font-size:clamp(13px,1.2vw,15px);font-weight:500;backdrop-filter:blur(3px)}
+.hattools button.on{background:var(--red);border-color:var(--red)}
+.camhint{position:absolute;top:10px;left:0;right:0;text-align:center;color:#fff;font-size:clamp(13px,1.2vw,15px);text-shadow:0 1px 6px rgba(0,0,0,.7);pointer-events:none}
+.actions{display:flex;gap:10px;margin-top:12px;flex:none}
+.btn{flex:1;min-height:64px;border-radius:12px;border:2px solid var(--red);background:var(--red);color:#fffaf2;font-weight:700;font-size:clamp(18px,1.8vw,23px);display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .12s,background .2s,opacity .2s}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.42}
+.btn.green{background:var(--green);border-color:var(--green)}
+.btn.sec{background:transparent;color:var(--green-d);border-color:var(--line)}
+.btn.big{min-height:74px;font-size:clamp(21px,2.1vw,27px)}
+.btn svg{width:28px;height:28px;stroke:currentColor;fill:none;stroke-width:2}
+.hidden{display:none!important}
+/* right */
+.body{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:12px;padding-right:2px}
+.moods{display:grid;grid-template-columns:1fr 1fr;gap:9px;flex:1;min-height:0;grid-auto-rows:1fr}
+.mood{border:2px solid var(--line);background:#fff;border-radius:12px;padding:6px 12px;text-align:left;display:flex;flex-direction:column;justify-content:center;gap:2px;color:var(--ink);transition:border-color .15s,background .15s,transform .1s;min-height:54px}
+.mood:active{transform:scale(.98)}
+.mood b{font-family:var(--serif);font-weight:700;font-size:clamp(17px,1.7vw,22px)}
+.mood span{font-size:clamp(12px,1.1vw,14px);color:var(--muted);line-height:1.35}
+.mood.on{border-color:var(--red);background:#fde8e4}
+.mood.on b{color:var(--red-d)}
+.result{display:flex;flex-direction:column;gap:12px}
+.chip{align-self:center;border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 16px;font-size:clamp(14px,1.3vw,16px);color:var(--muted)}
+.chip b{color:var(--red-d)}
+.pcard{border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,#fffcfb,#f9e9e5);padding:16px 18px;text-align:center}
+.pcard .lab{font-family:'Cormorant Garamond',serif;font-weight:700;letter-spacing:.2em;color:var(--gold);font-size:13px}
+.ptl{font-family:var(--title);font-size:clamp(24px,2.4vw,32px);color:var(--green-d);margin:6px 0 2px}
+.pby{font-family:var(--serif);font-weight:700;color:var(--muted);font-size:clamp(14px,1.3vw,17px)}
+.lucky{font-family:var(--pen);font-size:clamp(26px,2.5vw,34px);line-height:1.3;color:var(--red-d);text-align:center;word-break:keep-all;padding:0 6px}
+.shuffle .ptl,.shuffle .pby{opacity:.35;filter:blur(1px)}
+.reveal{animation:rise .6s ease-out both}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.preview{display:flex;justify-content:center}
+.preview img{width:min(100%,300px);height:auto;box-shadow:0 10px 24px rgba(60,40,20,.18);border:1px solid #eee;background:#fff}
+.hint{font-size:clamp(14px,1.3vw,16px);color:var(--muted);text-align:center;margin:8px 0 0;min-height:1.4em;flex:none}
+.toprint{display:flex;flex-direction:column;gap:8px;flex:none;margin-top:10px}
+.row{display:flex;gap:8px}
+.row .btn{min-height:54px;font-size:clamp(15px,1.4vw,18px)}
+@media (max-width:820px),(orientation:portrait){
+  body{overflow:auto} .app{height:auto;min-height:100vh}
+  main{grid-template-columns:1fr} .stage{min-height:62vw}
+  .credit{display:none} .moods{grid-auto-rows:auto}
+}
+</style>
+</head>
+<body>
+<div class="snow" id="snow"></div>
+<div class="app">
+  <header>
+    <div class="brand"><span class="en">Merry Poem-mas</span><h1>메리 포엠스마스</h1><span class="sub" id="subTitle"></span></div>
+    <div class="credit" id="credit"></div>
+  </header>
+  <div class="garland"></div>
+  <main>
+    <section class="panel">
+      <div class="ptitle"><b>2</b>산타 모자 쓰고 찰칵</div>
+      <div class="stage">
+        <div class="cam" id="cam">
+          <video id="video" playsinline autoplay muted></video>
+          <canvas class="still hidden" id="still"></canvas>
+          <canvas class="overlay" id="overlay"></canvas>
+          <div class="camhint" id="camHint"></div>
+          <div class="hattools" id="hatTools">
+            <button type="button" id="autoBtn" class="hidden">얼굴 자동 맞춤</button>
+            <button type="button" id="addHat">＋ 모자</button>
+            <button type="button" id="delHat">－ 모자</button>
+            <button type="button" id="bigHat">크게</button>
+            <button type="button" id="smallHat">작게</button>
+          </div>
+        </div>
+        <div class="msg hidden" id="camMsg"></div>
+        <div class="count" id="count"></div>
+        <div class="flash" id="flash"></div>
+      </div>
+      <div class="actions">
+        <button class="btn big" id="snapBtn" disabled><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="4"/></svg><span id="snapLabel">먼저 기분을 골라 주세요</span></button>
+        <button class="btn big hidden" id="fileBtn"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="4"/></svg>카메라로 찍기</button>
+        <button class="btn green big hidden" id="useStillBtn">이 사진으로 완성</button>
+        <button class="btn sec big hidden" id="retakeBtn">다시 찍기</button>
+      </div>
+      <input type="file" id="fileInput" accept="image/*" capture="user" class="hidden">
+    </section>
+    <section class="panel">
+      <div class="ptitle" id="rightTitle"><b>1</b>지금 기분은 어때요?</div>
+      <div class="body">
+        <div class="moods" id="moods"></div>
+        <div class="result hidden" id="result">
+          <div class="chip" id="chip"></div>
+          <div class="pcard" id="pcard">
+            <div class="lab">A POEM FOR YOU</div>
+            <div class="ptl" id="ptl"></div>
+            <div class="pby" id="pby"></div>
+          </div>
+          <div class="lucky hidden" id="lucky"></div>
+          <div class="preview hidden" id="preview"><img id="previewImg" alt="영수증 미리보기"></div>
+        </div>
+      </div>
+      <div class="toprint hidden" id="toPrint">
+        <button class="btn big" id="printBtn"><svg viewBox="0 0 24 24"><path d="M7 9V3h10v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M7 14h10v7H7z"/></svg>시 선물 출력</button>
+        <div class="row">
+          <button class="btn sec" id="redrawBtn">다른 시 받기</button>
+          <button class="btn sec" id="homeBtn">처음으로</button>
+        </div>
+      </div>
+      <p class="hint" id="hint"></p>
+    </section>
+  </main>
+</div>
+<div id="printArea" style="display:none"></div>
+<script>
+/* =====================================================================
+   메리 포엠스마스 — 설정 (여기만 고치면 됩니다)
+   ===================================================================== */
+var CREDIT        = '수내고등학교 도서부가 드려요';   // 영수증 맨 아래 · 화면 오른쪽 위
+var SUB_TITLE     = '산타 모자 쓰고 찰칵, 시 한 줄 선물';
+var AUTO_HOME_SEC = 45;      // 출력 후 이 시간(초)이 지나면 처음 화면으로
+var COUNTDOWN     = 3;       // 사진 찍기 전 카운트다운(초)
+var COPY_LINES    = 3;       // 필사 밑줄 칸 수
+var AUTO_FACE     = true;    // 얼굴을 찾아 모자를 자동으로 씌우기 (안 되면 손으로 끌어서 맞춤)
+
+/* 영수증 프린터 */
+var PRINTER_NAME = '';       // 블루투스 프린터 이름 일부 (비우면 CPP·Printer·POS 이름을 자동으로 찾음)
+var CUT_MODE = 66;           // 66 = 부분 자르기, 65 = 완전히 자르기
+var FEED_LINES = 1;          // 자르기 전 용지 이송 줄 수
+
+/* 기분 10가지 — poems: 아래 POEMS의 번호(id), lucky: 아래 LUCKY의 묶음 이름 */
+var MOODS = [
+ {key:'tired',   label:'지쳤어요',      desc:'올해 진짜 열심히 달렸어',        poems:['alsu','sanyu'],          lucky:'tired'},
+ {key:'anxious', label:'불안해요',      desc:'시험, 진로, 내일이 걱정돼',      poems:['sanyu','alsu','nareut'], lucky:'anxious'},
+ {key:'lonely',  label:'외로워요',      desc:'누군가 곁에 있으면 좋겠어',      poems:['kkadak','sanyu'],        lucky:'lonely'},
+ {key:'happy',   label:'행복해요',      desc:'요즘 웃을 일이 많아',            poems:['goyang','umma'],         lucky:'happy'},
+ {key:'regret',  label:'아쉬워요',      desc:'올해가 이렇게 끝나는 게 아쉬워', poems:['nimchim','motij','meonhu'],lucky:'regret'},
+ {key:'thanks',  label:'고마워요',      desc:'고마운 사람이 떠올라',          poems:['bumo','nareut'],         lucky:'thanks'},
+ {key:'love',    label:'좋아해요',      desc:'마음속에 누군가 있어',          poems:['bokjong','ganeun','meonhu'],lucky:'love'},
+ {key:'flutter', label:'설레요',        desc:'뭔가 좋은 일이 생길 것 같아',    poems:['goyang','ganeun'],       lucky:'flutter'},
+ {key:'hope',    label:'기대돼요',      desc:'새해가 기다려져',               poems:['umma','geumjan'],        lucky:'hope'},
+ {key:'random',  label:'잘 모르겠어요', desc:'그냥 시가 골라 줬으면',          poems:'ALL',                     lucky:'ALL'}
+];
+
+/* 시 (1920년대에 발표된, 저작권이 끝난 시). 줄은 \n, 연 구분은 빈 줄(\n\n) */
+var POEMS = {
+ umma:{title:'엄마야 누나야', poet:'김소월', text:
+'엄마야 누나야 강변 살자,\n뜰에는 반짝이는 금모래빛,\n뒷문 밖에는 갈잎의 노래,\n엄마야 누나야 강변 살자.'},
+ sanyu:{title:'산유화', poet:'김소월', text:
+'산에는 꽃 피네\n꽃이 피네\n갈 봄 여름 없이\n꽃이 피네\n\n산에\n산에\n피는 꽃은\n저만치 혼자서 피어 있네\n\n산에서 우는 작은 새요\n꽃이 좋아\n산에서\n사노라네\n\n산에는 꽃 지네\n꽃이 지네\n갈 봄 여름 없이\n꽃이 지네'},
+ meonhu:{title:'먼 후일', poet:'김소월', text:
+'먼 훗날 당신이 찾으시면\n그때에 내 말이 "잊었노라"\n\n당신이 속으로 나무라면\n"무척 그리다가 잊었노라"\n\n그래도 당신이 나무라면\n"믿기지 않아서 잊었노라"\n\n오늘도 어제도 아니 잊고\n먼 훗날 그때에 "잊었노라"'},
+ motij:{title:'못 잊어', poet:'김소월', text:
+'못 잊어 생각이 나겠지요,\n그런대로 한세상 지내시구려,\n사노라면 잊힐 날 있으리다.\n\n못 잊어 생각이 나겠지요,\n그런대로 세월만 가라시구려,\n못 잊어도 더러는 잊히오리다.\n\n그러나 또 한껏 이렇지요,\n"그리워 살뜰히 못 잊는데,\n어쩌면 생각이 떠지나요?"'},
+ ganeun:{title:'가는 길', poet:'김소월', text:
+'그립다\n말을 할까\n하니 그리워\n\n그냥 갈까\n그래도\n다시 더 한 번……\n\n저 산에도 까마귀, 들에 까마귀,\n서산에는 해 진다고\n지저귑니다.\n\n앞 강물, 뒷 강물,\n흐르는 물은\n어서 따라오라고 따라가자고\n흘러도 연달아 흐릅디다려.'},
+ geumjan:{title:'금잔디', poet:'김소월', text:
+'잔디,\n잔디,\n금잔디,\n심심산천에 붙는 불은\n가신 님 무덤가에 금잔디.\n봄이 왔네, 봄빛이 왔네.\n버드나무 끝에도 실가지에.\n봄빛이 왔네, 봄날이 왔네,\n심심산천에도 금잔디에.'},
+ bumo:{title:'부모', poet:'김소월', text:
+'낙엽이 우수수 떨어질 때,\n겨울의 기나긴 밤,\n어머님하고 둘이 앉아\n옛이야기 들어라.\n\n나는 어쩌면 생겨 나와\n이 이야기 듣는가?\n묻지도 말아라, 내일 날에\n내가 부모 되어서 알아보랴?'},
+ alsu:{title:'알 수 없어요', poet:'한용운', text:
+'바람도 없는 공중에 수직의 파문을 내이며 고요히 떨어지는 오동잎은 누구의 발자취입니까.\n\n지리한 장마 끝에 서풍에 몰려가는 무서운 검은 구름의 터진 틈으로 언뜻언뜻 보이는 푸른 하늘은 누구의 얼굴입니까.\n\n꽃도 없는 깊은 나무에 푸른 이끼를 거쳐서 옛 탑 위의 고요한 하늘을 스치는 알 수 없는 향기는 누구의 입김입니까.\n\n근원은 알지도 못할 곳에서 나서 돌부리를 울리고 가늘게 흐르는 작은 시내는 구비구비 누구의 노래입니까.\n\n연꽃 같은 발꿈치로 갓이 없는 바다를 밟고 옥 같은 손으로 끝없는 하늘을 만지면서 떨어지는 날을 곱게 단장하는 저녁놀은 누구의 시입니까.\n\n타고 남은 재가 다시 기름이 됩니다. 그칠 줄을 모르고 타는 나의 가슴은 누구의 밤을 지키는 약한 등불입니까.'},
+ nareut:{title:'나룻배와 행인', poet:'한용운', text:
+'나는 나룻배\n당신은 행인\n\n당신은 흙발로 나를 짓밟습니다.\n나는 당신을 안고 물을 건너갑니다.\n나는 당신을 안으면 깊으나 얕으나 급한 여울이나 건너갑니다.\n\n만일 당신이 아니 오시면 나는 바람을 쐬고 눈비를 맞으며 밤에서 낮까지 당신을 기다리고 있습니다.\n당신은 물만 건너면 나를 돌아보지도 않고 가십니다그려.\n그러나 당신이 언제든지 오실 줄만은 알아요.\n나는 당신을 기다리면서 날마다 날마다 낡아 갑니다.\n\n나는 나룻배\n당신은 행인'},
+ nimchim:{title:'님의 침묵', poet:'한용운', text:
+'님은 갔습니다. 아아, 사랑하는 나의 님은 갔습니다.\n푸른 산빛을 깨치고 단풍나무 숲을 향하여 난 작은 길을 걸어서, 차마 떨치고 갔습니다.\n황금의 꽃같이 굳고 빛나던 옛 맹세는 차디찬 티끌이 되어서 한숨의 미풍에 날아갔습니다.\n날카로운 첫 키스의 추억은 나의 운명의 지침을 돌려 놓고, 뒷걸음쳐서 사라졌습니다.\n나는 향기로운 님의 말소리에 귀먹고, 꽃다운 님의 얼굴에 눈멀었습니다.\n사랑도 사람의 일이라, 만날 때에 미리 떠날 것을 염려하고 경계하지 아니한 것은 아니지만, 이별은 뜻밖의 일이 되고, 놀란 가슴은 새로운 슬픔에 터집니다.\n그러나 이별을 쓸데없는 눈물의 원천을 만들고 마는 것은 스스로 사랑을 깨치는 것인 줄 아는 까닭에, 걷잡을 수 없는 슬픔의 힘을 옮겨서 새 희망의 정수박이에 들어부었습니다.\n우리는 만날 때에 떠날 것을 염려하는 것과 같이, 떠날 때에 다시 만날 것을 믿습니다.\n아아, 님은 갔지마는 나는 님을 보내지 아니하였습니다.\n제 곡조를 못 이기는 사랑의 노래는 님의 침묵을 휩싸고 돕니다.'},
+ bokjong:{title:'복종', poet:'한용운', text:
+'남들은 자유를 사랑한다지마는, 나는 복종을 좋아하여요.\n자유를 모르는 것은 아니지만, 당신에게는 복종만 하고 싶어요.\n복종하고 싶은 데 복종하는 것은 아름다운 자유보다도 달콤합니다. 그것이 나의 행복입니다.\n그러나 당신이 나더러 다른 사람을 복종하라면, 그것만은 복종할 수가 없습니다.\n다른 사람을 복종하려면, 당신에게 복종할 수가 없는 까닭입니다.'},
+ kkadak:{title:'사랑하는 까닭', poet:'한용운', text:
+'내가 당신을 사랑하는 것은 까닭이 없는 것이 아닙니다.\n다른 사람들은 나의 홍안만을 사랑하지마는 당신은 나의 백발도 사랑하는 까닭입니다.\n\n내가 당신을 그리워하는 것은 까닭이 없는 것이 아닙니다.\n다른 사람들은 나의 미소만을 사랑하지마는 당신은 나의 눈물도 사랑하는 까닭입니다.\n\n내가 당신을 기다리는 것은 까닭이 없는 것이 아닙니다.\n다른 사람들은 나의 건강만을 사랑하지마는 당신은 나의 죽음도 사랑하는 까닭입니다.'},
+ goyang:{title:'봄은 고양이로다', poet:'이장희', text:
+'꽃가루와 같이 부드러운 고양이의 털에\n고운 봄의 향기가 어리우도다.\n\n금방울과 같이 호동그란 고양이의 눈에\n미친 봄의 불길이 흐르도다.\n\n고요히 다물은 고양이의 입술에\n포근한 봄 졸음이 떠돌아라.\n\n날카롭게 쭉 뻗은 고양이의 수염에\n푸른 봄의 생기가 뛰놀아라.'}
+};
+
+/* 오늘의 행운 한 줄 — 기분별 묶음 + 공통 묶음(common). 한 줄에 들어가게 짧게! */
+var LUCKY = {
+ tired:  ['오늘은 쉬어도 돼, 넌 충분히 달려왔어','잠깐 멈춘 것도 여행의 일부야','따뜻한 이불 속 낮잠을 처방합니다','올해 견딘 너에게, 내년은 더 다정할 거야'],
+ anxious:['걱정의 반은 일어나지 않는대, 나머지는 같이 하자','너는 생각보다 훨씬 잘하고 있어','오늘의 한 걸음이 내일의 길이 될 거야','넘어져도 괜찮아, 다음 장은 또 있으니까'],
+ lonely: ['이 시를 고른 누군가도 지금 너와 같은 마음이야','너는 혼자가 아니야, 도서관은 늘 열려 있어','따뜻한 사람들이 늘 네 곁에 머물기를','오늘 밤 별 하나는 너를 위해 반짝일 거야'],
+ happy:  ['그 웃음, 새해에도 그대로 가져가!','네 행복이 주변까지 환하게 번지길','오늘의 기쁨을 오래오래 기억하길','지금 이 순간을 사진처럼 꼭 간직해'],
+ regret: ['끝나는 건 아쉽지만, 다음 장은 더 재밌을 거야','아쉬움은 소중했다는 증거래','못다 한 일은 새해 첫 페이지에 적어 두자','지나간 날들도 다 너를 만든 문장이야'],
+ thanks: ['그 고마움, 오늘 꼭 한마디로 전해 보자','고마움을 아는 너라서 더 고마워','네가 받은 다정함만큼 행복하길','감사는 나눌수록 두 배가 된대'],
+ love:   ['그 마음, 새해엔 꼭 닿기를','좋아하는 마음은 그 자체로 반짝여','용기 한 스푼이면 충분해','짝사랑도 한 편의 시가 될 수 있어'],
+ flutter:['그 예감, 맞을 거야!','설레는 일들이 줄줄이 찾아오길','두근거림은 좋은 일이 오는 소리래','새해엔 매일이 크리스마스 전날처럼'],
+ hope:   ['새해 첫 페이지는 네가 원하는 문장으로','2027년, 너의 계절이 오고 있어','바라는 일이 하나씩 조용히 이루어지길','새해엔 걱정은 반으로, 웃음은 두 배로'],
+ common: ['복은 많이, 숙제는 적게!','네 하루하루가 좋은 문장처럼 빛나길','시험 점수보다 네가 훨씬 크다는 걸 잊지 마','좋은 책과 좋은 친구가 늘 곁에 있기를',
+          '느려도 괜찮아, 꽃은 저마다 피는 때가 달라','오늘 흘린 눈물도 언젠가 시가 될 거야','내년의 너는 오늘보다 조금 더 웃을 거야','산타도 너의 한 해를 응원하고 있어']
+};
+</script>
+<script>
+/* ===== 아래부터는 프로그램 코드입니다 ===== */
+function $(id){return document.getElementById(id);}
+function esc(t){var d=document.createElement('div');d.textContent=String(t==null?'':t);return d.innerHTML;}
+function pad(n){return n<10?'0'+n:''+n;}
+function pick(arr,not){if(!arr.length)return null;if(arr.length<2)return arr[0];var x;do{x=arr[Math.floor(Math.random()*arr.length)];}while(x===not);return x;}
+
+var PHOTO_W=1056,PHOTO_H=792;
+var state={mood:null,photo:null,poemKey:null,lucky:null,receipt:null};
+var stream=null,homeTimer=null,busy=false,renderToken=0;
+var source='video';          // 'video' (실시간) 또는 'still' (카메라 앱으로 찍은 사진)
+var stillImg=null;
+
+$('subTitle').textContent=SUB_TITLE;
+$('credit').textContent=CREDIT;
+
+/* 눈 내리기 */
+(function(){var s=$('snow'),h='';for(var i=0;i<26;i++){var l=Math.random()*100,d=8+Math.random()*10,dl=-Math.random()*18,sz=3+Math.random()*5;
+ h+='<i style="left:'+l+'%;width:'+sz+'px;height:'+sz+'px;animation-duration:'+d+'s;animation-delay:'+dl+'s"></i>';}s.innerHTML=h;})();
+
+/* ---------------- 기분 고르기 ---------------- */
+$('moods').innerHTML=MOODS.map(function(m,i){return '<button type="button" class="mood" data-i="'+i+'"><b>'+esc(m.label)+'</b><span>'+esc(m.desc)+'</span></button>';}).join('');
+Array.prototype.forEach.call(document.querySelectorAll('.mood'),function(b){
+ b.onclick=function(){
+  state.mood=MOODS[+b.dataset.i];
+  Array.prototype.forEach.call(document.querySelectorAll('.mood'),function(x){x.classList.toggle('on',x===b);});
+  updateSnap();
+ };
+});
+function updateSnap(){
+ var ok=!!state.mood;
+ $('snapBtn').disabled=!ok;
+ $('snapLabel').textContent=ok?'사진 찍기':'먼저 기분을 골라 주세요';
+ $('fileBtn').disabled=!ok;
+ $('hint').textContent=ok?'모자를 머리 위에 맞추고 [사진 찍기]를 눌러 주세요':'';
+}
+function poemsFor(m){
+ var keys=m.poems==='ALL'?Object.keys(POEMS):m.poems.filter(function(k){return POEMS[k];});
+ return keys.length?keys:Object.keys(POEMS);
+}
+function luckyFor(m){
+ if(m.lucky==='ALL'){var all=[];for(var k in LUCKY)all=all.concat(LUCKY[k]);return all;}
+ return (LUCKY[m.lucky]||[]).concat(LUCKY.common.slice(0,2));
+}
+
+/* ---------------- 카메라 ---------------- */
+var CAM_TRIES=[
+ {video:{facingMode:'user',width:{ideal:1280},height:{ideal:960}},audio:false},
+ {video:{facingMode:'user'},audio:false},
+ {video:true,audio:false}
+];
+var CAM_WHY={
+ NotAllowedError:'카메라 권한이 꺼져 있어요. Fully Kiosk의 Enable Webcam Access와 안드로이드 앱 권한(카메라)을 확인해 주세요.',
+ SecurityError:'보안 설정 때문에 화면 안에서 카메라를 쓸 수 없어요.',
+ NotReadableError:'다른 앱이 카메라를 쓰고 있어요. 다른 앱을 닫고 [카메라 다시 연결]을 눌러 주세요.',
+ NotFoundError:'카메라를 찾지 못했어요.',
+ OverconstrainedError:'이 카메라에 맞는 설정을 찾지 못했어요.',
+ NoFrame:'카메라는 켜졌지만 화면이 들어오지 않아요.',
+ NoApi:'이 브라우저에서는 화면 안에서 카메라를 켤 수 없어요.'
+};
+function stopStream(){if(stream){try{stream.getTracks().forEach(function(t){t.stop();});}catch(e){}}stream=null;}
+function startCamera(){
+ var v=$('video');stopStream();
+ if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){useFileFallback('NoApi');return;}
+ var m=$('camMsg');m.classList.remove('hidden');m.innerHTML='<div>카메라를 켜는 중이에요…</div>';
+ var i=0,lastErr=null;
+ (function next(){
+  if(i>=CAM_TRIES.length){useFileFallback(lastErr&&lastErr.name);return;}
+  navigator.mediaDevices.getUserMedia(CAM_TRIES[i++]).then(function(s){
+   stream=s;v.srcObject=s;v.setAttribute('playsinline','');v.muted=true;
+   try{var pr=v.play();if(pr&&pr.catch)pr.catch(function(){});}catch(e){}
+   var t0=Date.now();
+   (function waitFrame(){
+    if(v.videoWidth>0){showLive();return;}
+    if(Date.now()-t0>5000){stopStream();lastErr={name:'NoFrame'};next();return;}
+    setTimeout(waitFrame,200);
+   })();
+  }).catch(function(err){
+   lastErr=err;
+   if(err&&(err.name==='NotAllowedError'||err.name==='SecurityError')){useFileFallback(err.name);return;}
+   next();
+  });
+ })();
+}
+function showLive(){
+ source='video';
+ $('video').classList.remove('hidden');$('still').classList.add('hidden');$('camMsg').classList.add('hidden');
+ $('snapBtn').classList.remove('hidden');$('fileBtn').classList.add('hidden');$('useStillBtn').classList.add('hidden');$('retakeBtn').classList.add('hidden');
+ $('hatTools').classList.remove('hidden');
+ if(!hats.length)resetHats();
+ updateSnap();initFace();
+}
+function useFileFallback(reason){
+ source='still';
+ $('video').classList.add('hidden');$('hatTools').classList.add('hidden');
+ var why=CAM_WHY[reason]||'화면 안에서 카메라를 켜지 못했어요.';
+ var m=$('camMsg');m.classList.remove('hidden');
+ m.innerHTML='<div style="font-size:1.3em;font-weight:700">아래 [카메라로 찍기] 버튼으로<br>사진을 찍어 주세요</div>'+
+  '<div style="opacity:.75;font-size:.85em">찍은 뒤 산타 모자를 손가락으로 끌어 머리 위에 올려 주세요.<br>'+esc(why)+(reason?' ('+esc(reason)+')':'')+'</div>'+
+  '<button type="button" id="reconBtn" style="margin-top:6px;padding:10px 18px;border-radius:10px;border:1px solid rgba(255,250,240,.7);background:transparent;color:#fff6e6;font-size:1em">카메라 다시 연결</button>';
+ $('reconBtn').onclick=function(){startCamera();};
+ $('snapBtn').classList.add('hidden');$('fileBtn').classList.remove('hidden');$('useStillBtn').classList.add('hidden');
+ updateSnap();
+}
+document.addEventListener('visibilitychange',function(){
+ if(document.visibilityState==='visible'&&stream&&!stream.active&&!state.photo)startCamera();
+});
+$('fileBtn').onclick=function(){$('fileInput').value='';$('fileInput').click();};
+$('fileInput').onchange=function(e){
+ var f=e.target.files&&e.target.files[0];if(!f)return;
+ var r=new FileReader();
+ r.onload=function(){var img=new Image();img.onload=function(){showStill(img);};img.src=r.result;};
+ r.readAsDataURL(f);
+};
+/* 카메라 앱으로 찍은 사진: 화면에 보여 주고 모자를 손으로 맞춘 뒤 [이 사진으로 완성] */
+function showStill(img){
+ stillImg=img;source='still';
+ var c=$('still');c.width=PHOTO_W;c.height=PHOTO_H;drawCover(c.getContext('2d'),img,img.naturalWidth,img.naturalHeight,PHOTO_W,PHOTO_H,false);
+ c.classList.remove('hidden');$('camMsg').classList.add('hidden');$('hatTools').classList.remove('hidden');$('autoBtn').classList.add('hidden');
+ autoMode=false;if(!hats.length)resetHats();
+ $('fileBtn').classList.add('hidden');$('useStillBtn').classList.remove('hidden');$('retakeBtn').classList.remove('hidden');
+ $('camHint').textContent='모자를 끌어서 머리 위에 올려 주세요';
+}
+$('useStillBtn').onclick=function(){if(stillImg)capture(stillImg,stillImg.naturalWidth,stillImg.naturalHeight,false);};
+
+/* 가운데를 4:3으로 잘라 그리기 */
+function drawCover(ctx,src,sw,sh,W,H,mirror){
+ var r=W/H,cw=sw,ch=sh;if(sw/sh>r)cw=sh*r;else ch=sw/r;
+ ctx.save();if(mirror){ctx.translate(W,0);ctx.scale(-1,1);}
+ ctx.drawImage(src,(sw-cw)/2,(sh-ch)/2,cw,ch,0,0,W,H);ctx.restore();
+}
+
+/* ---------------- 산타 모자 ----------------
+   모자 좌표는 사진 비율(0~1): x=가운데, y=모자 테두리 아래쪽, w=너비 */
+var hats=[],autoMode=true,dragging=null,selHat=-1;
+function resetHats(){hats=[{x:.5,y:.33,w:.3}];selHat=0;}
+function santaHat(x,cx,by,w){
+ x.save();
+ x.fillStyle='#c62828';x.beginPath();
+ x.moveTo(cx-w*.46,by);x.quadraticCurveTo(cx-w*.2,by-w*.62,cx+w*.18,by-w*.62);
+ x.quadraticCurveTo(cx+w*.5,by-w*.6,cx+w*.62,by-w*.2);x.quadraticCurveTo(cx+w*.36,by-w*.36,cx+w*.42,by);x.closePath();x.fill();
+ x.fillStyle='rgba(0,0,0,.14)';x.beginPath();x.moveTo(cx+w*.05,by);x.quadraticCurveTo(cx+w*.3,by-w*.4,cx+w*.6,by-w*.22);x.quadraticCurveTo(cx+w*.36,by-w*.3,cx+w*.42,by);x.closePath();x.fill();
+ x.fillStyle='#fafafa';x.strokeStyle='#c8c8c8';x.lineWidth=Math.max(1,w*.012);
+ x.beginPath();if(x.roundRect)x.roundRect(cx-w*.52,by-w*.1,w*1.0,w*.2,w*.1);else x.rect(cx-w*.52,by-w*.1,w*1.0,w*.2);x.fill();x.stroke();
+ x.beginPath();x.arc(cx+w*.62,by-w*.2,w*.1,0,7);x.fill();x.stroke();
+ x.restore();
+}
+function hatBox(h,W,H){var w=h.w*W,cx=h.x*W,by=h.y*H;return {l:cx-w*.55,r:cx+w*.75,t:by-w*.68,b:by+w*.12};}
+function drawHats(ctx,W,H){hats.forEach(function(h){santaHat(ctx,h.x*W,h.y*H,h.w*W);});}
+var ov=$('overlay'),ovx=ov.getContext('2d');
+function sizeOverlay(){var r=ov.getBoundingClientRect(),dpr=Math.min(2,window.devicePixelRatio||1);var w=Math.round(r.width*dpr),h=Math.round(r.height*dpr);if(ov.width!==w||ov.height!==h){ov.width=w;ov.height=h;}}
+function renderOverlay(){
+ sizeOverlay();ovx.clearRect(0,0,ov.width,ov.height);
+ if(!state.photo&&(source==='video'?!$('video').classList.contains('hidden'):!$('still').classList.contains('hidden')))drawHats(ovx,ov.width,ov.height);
+ requestAnimationFrame(renderOverlay);
+}
+requestAnimationFrame(renderOverlay);
+function ptr(e){var r=ov.getBoundingClientRect();return {x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height};}
+ov.addEventListener('pointerdown',function(e){
+ var p=ptr(e),W=1,H=ov.height/ov.width;
+ for(var i=hats.length-1;i>=0;i--){var b=hatBox(hats[i],1,1);if(p.x>=b.l&&p.x<=b.r&&p.y>=b.t&&p.y<=b.b){dragging={i:i,dx:hats[i].x-p.x,dy:hats[i].y-p.y};selHat=i;setManual();ov.setPointerCapture(e.pointerId);e.preventDefault();return;}}
+});
+ov.addEventListener('pointermove',function(e){if(!dragging)return;var p=ptr(e),h=hats[dragging.i];h.x=Math.min(1,Math.max(0,p.x+dragging.dx));h.y=Math.min(1.1,Math.max(.05,p.y+dragging.dy));});
+['pointerup','pointercancel'].forEach(function(t){ov.addEventListener(t,function(){dragging=null;});});
+function setManual(){if(autoMode&&faceReady){autoMode=false;$('autoBtn').classList.remove('hidden');}autoMode=false;$('camHint').textContent='모자를 끌어서 머리 위에 올려 주세요';}
+$('addHat').onclick=function(){setManual();if(hats.length<6){var w=hats.length?hats[hats.length-1].w:.3;hats.push({x:.25+Math.random()*.5,y:.35,w:w});selHat=hats.length-1;}};
+$('delHat').onclick=function(){setManual();if(hats.length){hats.splice(selHat>=0&&selHat<hats.length?selHat:hats.length-1,1);selHat=hats.length-1;}};
+$('bigHat').onclick=function(){setManual();hats.forEach(function(h,i){if(selHat<0||i===selHat||hats.length===1)h.w=Math.min(.8,h.w*1.12);});};
+$('smallHat').onclick=function(){setManual();hats.forEach(function(h,i){if(selHat<0||i===selHat||hats.length===1)h.w=Math.max(.08,h.w/1.12);});};
+$('autoBtn').onclick=function(){autoMode=true;$('autoBtn').classList.add('hidden');$('camHint').textContent='얼굴을 찾으면 모자가 자동으로 올라가요';};
+
+/* 얼굴 자동 인식 (인터넷으로 MediaPipe를 불러옴. 안 되면 손으로 맞추기만 사용) */
+var faceDet=null,faceReady=false,faceLoading=false,lastFaceT=0;
+function initFace(){
+ if(!AUTO_FACE||faceReady||faceLoading)return;
+ faceLoading=true;$('camHint').textContent='모자를 끌어서 머리 위에 올려 주세요';
+ var BASE='https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14';
+ try{
+  import(BASE+'/vision_bundle.mjs').then(function(mp){
+   return mp.FilesetResolver.forVisionTasks(BASE+'/wasm').then(function(fs){
+    return mp.FaceDetector.createFromOptions(fs,{baseOptions:{modelAssetPath:'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite',delegate:'GPU'},runningMode:'VIDEO',minDetectionConfidence:.5});
+   });
+  }).then(function(d){faceDet=d;faceReady=true;if(autoMode)$('camHint').textContent='얼굴을 찾으면 모자가 자동으로 올라가요';faceLoop();})
+   .catch(function(){faceLoading=false;});
+ }catch(e){faceLoading=false;}
+}
+function faceLoop(){
+ requestAnimationFrame(faceLoop);
+ var v=$('video');
+ if(!faceDet||!autoMode||source!=='video'||state.photo||!v.videoWidth||v.readyState<2)return;
+ var now=performance.now();if(now-lastFaceT<90)return;lastFaceT=now;
+ var res;try{res=faceDet.detectForVideo(v,now);}catch(e){return;}
+ var vw=v.videoWidth,vh=v.videoHeight,r=4/3,cw=vw,ch=vh;if(vw/vh>r)cw=vh*r;else ch=vw/r;
+ var x0=(vw-cw)/2,y0=(vh-ch)/2;
+ var faces=(res&&res.detections||[]).map(function(d){var b=d.boundingBox;
+  var nx=(b.originX-x0)/cw,ny=(b.originY-y0)/ch,nw=b.width/cw,nh=b.height/ch;
+  nx=1-nx-nw;   // 화면이 거울처럼 뒤집혀 있으므로
+  return {x:nx+nw/2,y:ny+nh*.06,w:nw*1.55};
+ }).filter(function(f){return f.x>-.1&&f.x<1.1;}).sort(function(a,b){return a.x-b.x;}).slice(0,6);
+ if(!faces.length)return;
+ var next=faces.map(function(f){
+  var best=null,bd=1e9;hats.forEach(function(h){var d=Math.abs(h.x-f.x)+Math.abs(h.y-f.y);if(d<bd){bd=d;best=h;}});
+  if(best&&bd<.25){return {x:best.x+(f.x-best.x)*.55,y:best.y+(f.y-best.y)*.55,w:best.w+(f.w-best.w)*.4};}
+  return f;
+ });
+ hats=next;
+}
+
+/* ---------------- 촬영 ---------------- */
+$('snapBtn').onclick=function(){
+ if(busy||!state.mood)return;busy=true;$('snapBtn').disabled=true;
+ var n=COUNTDOWN,c=$('count');
+ (function tick(){
+  if(n<=0){c.classList.remove('on');c.textContent='';
+   var v=$('video');$('flash').classList.remove('on');void $('flash').offsetWidth;$('flash').classList.add('on');
+   capture(v,v.videoWidth,v.videoHeight,true);busy=false;$('snapBtn').disabled=false;return;}
+  c.textContent=n;c.classList.remove('on');void c.offsetWidth;c.classList.add('on');n--;setTimeout(tick,900);
+ })();
+};
+function capture(src,sw,sh,mirror){
+ if(!sw||!sh||!state.mood)return;
+ var cv=document.createElement('canvas');cv.width=PHOTO_W;cv.height=PHOTO_H;var x=cv.getContext('2d');
+ drawCover(x,src,sw,sh,PHOTO_W,PHOTO_H,mirror);
+ drawHats(x,PHOTO_W,PHOTO_H);
+ state.photo=cv;
+ var st=$('still');st.width=PHOTO_W;st.height=PHOTO_H;st.getContext('2d').drawImage(cv,0,0);
+ st.classList.remove('hidden');$('video').classList.add('hidden');$('camMsg').classList.add('hidden');$('hatTools').classList.add('hidden');$('camHint').textContent='';
+ $('snapBtn').classList.add('hidden');$('fileBtn').classList.add('hidden');$('useStillBtn').classList.add('hidden');$('retakeBtn').classList.remove('hidden');
+ givePoem(true);
+}
+$('retakeBtn').onclick=function(){retake();};
+$('homeBtn').onclick=function(){resetAll();};
+function retake(){
+ clearTimeout(homeTimer);renderToken++;state.photo=null;state.receipt=null;state.poemKey=null;state.lucky=null;stillImg=null;
+ showChoose();
+ if(stream&&stream.active)showLive();else startCamera();
+}
+function resetAll(){
+ state.mood=null;Array.prototype.forEach.call(document.querySelectorAll('.mood'),function(x){x.classList.remove('on');});
+ hats=[];autoMode=true;$('autoBtn').classList.add('hidden');
+ retake();updateSnap();
+}
+function showChoose(){
+ $('moods').classList.remove('hidden');$('result').classList.add('hidden');$('toPrint').classList.add('hidden');
+ $('rightTitle').innerHTML='<b>1</b>지금 기분은 어때요?';
+ $('hint').textContent='';var old=$('altLink');if(old)old.remove();
+}
+
+/* ---------------- 시 고르기 ---------------- */
+function givePoem(animate){
+ var m=state.mood,keys=poemsFor(m),pk=pick(keys,state.poemKey),lk=pick(luckyFor(m),state.lucky);
+ state.poemKey=pk;state.lucky=lk;
+ $('moods').classList.add('hidden');$('result').classList.remove('hidden');$('toPrint').classList.remove('hidden');
+ $('rightTitle').innerHTML='<b>3</b>당신에게 도착한 시';
+ $('chip').innerHTML='오늘의 기분 · <b>'+esc(m.label)+'</b>';
+ $('printBtn').disabled=true;$('hint').textContent='';var old=$('altLink');if(old)old.remove();
+ var card=$('pcard'),k=0,all=Object.keys(POEMS);
+ if(animate){
+  card.classList.add('shuffle');$('lucky').classList.add('hidden');$('preview').classList.add('hidden');
+  (function spin(){var t=POEMS[all[Math.floor(Math.random()*all.length)]];$('ptl').textContent='「'+t.title+'」';$('pby').textContent=t.poet;
+   if(++k<12)setTimeout(spin,70+k*12);else finish();})();
+ }else finish();
+ function finish(){
+  var p=POEMS[pk];card.classList.remove('shuffle');
+  $('ptl').textContent='「'+p.title+'」';$('pby').textContent=p.poet;
+  card.classList.remove('reveal');void card.offsetWidth;card.classList.add('reveal');
+  var l=$('lucky');l.textContent='“ '+lk+' ”';l.classList.remove('hidden','reveal');void l.offsetWidth;l.classList.add('reveal');
+  renderReceipt();
+ }
+}
+$('redrawBtn').onclick=function(){if(state.photo)givePoem(true);};
+
+function renderReceipt(){
+ var token=++renderToken,done=false;
+ var go=function(){
+  if(done||token!==renderToken)return;done=true;
+  try{state.receipt=drawReceipt();}catch(e){$('hint').textContent='영수증을 만들지 못했어요. 다시 찍어 주세요.';return;}
+  $('previewImg').src=state.receipt.toDataURL('image/png');
+  $('preview').classList.remove('hidden');$('printBtn').disabled=false;
+ };
+ try{
+  if(document.fonts&&document.fonts.load){
+   var p=POEMS[state.poemKey],all=p.text+p.title+p.poet+state.lucky+CREDIT+SUB_TITLE+state.mood.label+'메리포엠스마스오늘의기분당신에게도착한시마음에남는한줄필사골라따라써보세요필사한사람행운「」—·,.';
+   Promise.all([
+    document.fonts.load("80px 'Great Vibes'",'Merry Poem-mas Christmas & Happy New Year'),
+    document.fonts.load("46px 'Song Myung'",all),document.fonts.load("700 26px 'Gowun Batang'",all),
+    document.fonts.load("40px 'Nanum Pen Script'",all),document.fonts.load("700 17px 'Noto Sans KR'",all),document.fonts.load("500 17px 'Noto Sans KR'",all)
+   ]).then(go,go);
+   setTimeout(go,3000);
+  }else go();
+ }catch(e){go();}
+}
+
+/* ---------------- 감열지용 사진 (흑백 점묘) ---------------- */
+function ditherPhoto(src,w,h){
+ var c=document.createElement('canvas');c.width=w;c.height=h;
+ var x=c.getContext('2d');x.drawImage(src,0,0,w,h);
+ var im=x.getImageData(0,0,w,h),d=im.data,n=w*h,L=new Float32Array(n),hist=new Uint32Array(256);
+ for(var i=0;i<n;i++){var v=d[i*4]*.299+d[i*4+1]*.587+d[i*4+2]*.114;L[i]=v;hist[v|0]++;}
+ var lo=0,hi=255,acc=0;for(var a=0;a<256;a++){acc+=hist[a];if(acc>n*0.02){lo=a;break;}}
+ acc=0;for(var b=255;b>=0;b--){acc+=hist[b];if(acc>n*0.01){hi=b;break;}}
+ var span=Math.max(30,hi-lo);
+ for(i=0;i<n;i++){var t=Math.min(1,Math.max(0,(L[i]-lo)/span));L[i]=255*Math.pow(t,0.78);}
+ for(var y=0;y<h;y++)for(var xx=0;xx<w;xx++){
+  var k=y*w+xx,old=L[k],nw=old<128?0:255,err=(old-nw)/8;L[k]=nw;
+  if(xx+1<w)L[k+1]+=err; if(xx+2<w)L[k+2]+=err;
+  if(y+1<h){if(xx>0)L[k+w-1]+=err;L[k+w]+=err;if(xx+1<w)L[k+w+1]+=err;}
+  if(y+2<h)L[k+2*w]+=err;
+ }
+ for(i=0;i<n;i++){var g=L[i]<128?0:255;d[i*4]=d[i*4+1]=d[i*4+2]=g;d[i*4+3]=255;}
+ x.putImageData(im,0,0);return c;
+}
+
+/* 한글 의미 단위로 고르게 줄바꿈 */
+function semanticLines(s,maxW,measure){
+ var MOD={'그':1,'이':1,'저':1,'그의':1,'나의':1,'내':1,'네':1,'제':1,'우리의':1,'한':1,'두':1,'세':1,'모든':1,'어떤':1,'아무':1,'온':1,'새':1,'헌':1,'첫':1,'각':1,'몇':1,'여러':1,'더':1,'가장':1,'아주':1,'너무':1,'매우':1,'참':1,'잘':1,'못':1,'안':1,'다시':1,'또':1,'작은':1,'깊은':1,'푸른':1,'검은':1,'같은':1,'없는':1,'남은':1,'붙는':1,'피는':1,'우는':1,'흐르는':1,'떨어지는':1,'몰려가는':1,'보이는':1,'스치는':1,'지키는':1,'빛나던':1,'끝없는':1,'놀란':1,'새로운':1,'차디찬':1,'날카로운':1,'향기로운':1,'꽃다운':1,'부드러운':1,'고운':1,'포근한':1,'그런':1,'이런':1,'저런':1,'그렇게':1};
+ var END=/[,.!?…:;·”’"'」』)]$/,CONN=/(며|고|지만|는데|은데|면|니까|니|어서|아서|도록|려고|듯이|든|든지|으나|나|서)$/,TOPIC=/(은|는|이|가|도|에서|에게|까지|부터|처럼|보다|다|요|라|야|죠|로|으로|에)$/,OBJ=/(을|를)$/;
+ var words=String(s).trim().split(/\s+/).filter(Boolean),n=words.length;if(!n)return [''];
+ var sw=measure(' '),ww=words.map(function(t){return measure(t);});
+ function width(i,j){var t=0;for(var k=i;k<j;k++)t+=ww[k]+(k>i?sw:0);return t;}
+ if(width(0,n)<=maxW)return [words.join(' ')];
+ for(var z=0;z<n;z++)if(ww[z]>maxW){
+  var out=[],line='';Array.from(words.join(' ')).forEach(function(ch){if(measure(line+ch)>maxW&&line){out.push(line);line=ch;}else line+=ch;});
+  if(line)out.push(line);return out;
+ }
+ function breakCost(i){
+  var word=words[i],next=words[i+1],w=word.replace(/[“”"'()「」]/g,''),c=0;
+  if(END.test(word))c=-6;
+  else if(MOD[w])c=9;
+  else if(next&&/(고|어|아|여|해)$/.test(w)&&/^(싶|있|주|보)/.test(next))c=9;
+  else if(next&&/^[,.!?…”’"')]/.test(next))c=9;
+  else if(/의$/.test(w))c=7;
+  else if(/(한|된|던|할|될|운|쁜|른)$/.test(w))c=5;
+  else if(CONN.test(w))c=-3;
+  else if(TOPIC.test(w))c=-1;
+  else if(OBJ.test(w))c=1;
+  else c=2;
+  return c;
+ }
+ function best(k){
+  var avg=width(0,n)/k,INF=1e9,dp=[],from=[];
+  for(var a=0;a<=k;a++){dp.push([]);from.push([]);for(var b=0;b<=n;b++){dp[a][b]=INF;from[a][b]=-1;}}
+  dp[0][0]=0;
+  for(var L=1;L<=k;L++)for(var j=1;j<=n;j++)for(var i=L-1;i<j;i++){
+   if(dp[L-1][i]>=INF)continue;var w=width(i,j);if(w>maxW)continue;
+   var d=(w-avg)/maxW,cost=d*d*40;if(j-i===1&&n>2)cost+=6;if(j<n)cost+=breakCost(j-1);
+   var v=dp[L-1][i]+cost;if(v<dp[L][j]){dp[L][j]=v;from[L][j]=i;}
+  }
+  if(dp[k][n]>=INF)return null;
+  var lines=[],j2=n;for(var L2=k;L2>0;L2--){var i2=from[L2][j2];lines.unshift(words.slice(i2,j2).join(' '));j2=i2;}
+  return {cost:dp[k][n],lines:lines};
+ }
+ var k=1,r=null;while(!r&&k<=n){r=best(k);if(!r)k++;}
+ return r.lines;
+}
+
+/* ---------------- 영수증 그리기 (80mm = 576점) ---------------- */
+function drawReceipt(){
+ var W=576,P=24,tmp=document.createElement('canvas');tmp.width=W;tmp.height=6000;
+ var ctx=tmp.getContext('2d'),y=0,poem=POEMS[state.poemKey];
+ var SERIF="'Gowun Batang','Noto Serif KR',serif",SANS="'Noto Sans KR',sans-serif",PEN="'Nanum Pen Script',cursive",SCRIPT="'Great Vibes',cursive",TITLE="'Song Myung','Gowun Batang',serif";
+ ctx.fillStyle='#fff';ctx.fillRect(0,0,W,tmp.height);ctx.fillStyle='#000';ctx.strokeStyle='#000';
+ ctx.textBaseline='top';ctx.textAlign='center';ctx.lineCap='round';ctx.lineJoin='round';
+ function c(s,f,lh){ctx.font=f;ctx.textAlign='center';ctx.fillText(s,W/2,y);y+=lh;}
+ function fit(s,size,tpl,lh,maxW,minPx){var px=size;for(;;){ctx.font=tpl.replace('{px}',px);if(ctx.measureText(s).width<=(maxW||W-P*2)||px<=(minPx||12))break;px--;}ctx.textAlign='center';ctx.fillText(s,W/2,y);y+=lh||Math.round(px*1.4);return px;}
+ function wrap(s,tpl,size,lh,maxW){ctx.font=tpl.replace('{px}',size);ctx.textAlign='center';semanticLines(s,maxW||W-P*2,function(t){return ctx.measureText(t).width;}).forEach(function(l){ctx.fillText(l,W/2,y);y+=lh;});}
+ function star(cx,cy,r,fill){ctx.beginPath();for(var i=0;i<10;i++){var a=-Math.PI/2+i*Math.PI/5,rr=i%2?r*.42:r;ctx.lineTo(cx+Math.cos(a)*rr,cy+Math.sin(a)*rr);}ctx.closePath();if(fill)ctx.fill();else{ctx.lineWidth=1.8;ctx.stroke();}}
+ function sparkle(cx,cy,r){ctx.beginPath();ctx.moveTo(cx,cy-r);ctx.quadraticCurveTo(cx,cy,cx+r,cy);ctx.quadraticCurveTo(cx,cy,cx,cy+r);ctx.quadraticCurveTo(cx,cy,cx-r,cy);ctx.quadraticCurveTo(cx,cy,cx,cy-r);ctx.fill();}
+ function ornament(cx,cy,r,kind){
+  ctx.save();ctx.lineWidth=1.8;ctx.fillRect(cx-r*.28,cy-r-6,r*.56,6);ctx.beginPath();ctx.arc(cx,cy,r,0,7);
+  if(kind===0){ctx.stroke();ctx.beginPath();ctx.moveTo(cx-r,cy);ctx.quadraticCurveTo(cx,cy+r*.45,cx+r,cy);ctx.stroke();ctx.beginPath();ctx.moveTo(cx-r*.9,cy-r*.4);ctx.quadraticCurveTo(cx,cy+r*.05,cx+r*.9,cy-r*.4);ctx.stroke();}
+  else{ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(cx-r*.35,cy-r*.35,r*.18,0,7);ctx.fill();}
+  ctx.restore();
+ }
+ function garland(){
+  var top=y;ctx.save();ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,top+6);ctx.quadraticCurveTo(W/2,top+46,W,top+6);ctx.stroke();ctx.restore();
+  [[54,34,0,14],[132,62,2,0],[204,40,1,13],[288,30,3,0],[372,40,1,13],[444,62,2,0],[522,34,0,14]].forEach(function(it){
+   var x=it[0],t=x/W,sy=top+6+(1-Math.pow(2*t-1,2))*20,len=it[1];
+   ctx.save();ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(x,sy);ctx.lineTo(x,sy+len);ctx.stroke();ctx.restore();
+   if(it[2]===2)star(x,sy+len+10,11,true);else if(it[2]===3)star(x,sy+len+13,15,false);else ornament(x,sy+len+it[3]+6,it[3],it[2]);
+  });
+  y=top+116;
+ }
+ function snowDots(){var n=24,step=(W-P*2)/n;for(var i=0;i<n;i++){var cx=P+step*(i+.5),cy=y+8+((i*7)%5)*2;if(i%6===3)sparkle(cx,cy,7);else{ctx.beginPath();ctx.arc(cx,cy,i%2?1.6:2.6,0,7);ctx.fill();}}y+=26;}
+ function divider(){ctx.save();ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(P+20,y+8);ctx.lineTo(W/2-30,y+8);ctx.moveTo(W/2+30,y+8);ctx.lineTo(W-P-20,y+8);ctx.stroke();ctx.restore();
+  star(W/2,y+8,9,true);sparkle(W/2-18,y+8,4);sparkle(W/2+18,y+8,4);y+=26;}
+
+ // 머리말
+ garland();
+ c('Merry Poem-mas',"84px "+SCRIPT,88);
+ c('메리 포엠스마스',"46px "+TITLE,60);
+ fit(SUB_TITLE,19,"700 {px}px "+SERIF,40);
+ divider();y+=10;
+ // 사진
+ var pw=W-P*2-16,ph=Math.round(pw*PHOTO_H/PHOTO_W),px=(W-pw)/2;
+ ctx.save();ctx.lineWidth=1.5;ctx.strokeRect(px-8.5,y-8.5,pw+17,ph+17);ctx.restore();
+ ctx.drawImage(ditherPhoto(state.photo,pw,ph),px,y);ctx.lineWidth=2.5;ctx.strokeRect(px+1,y+1,pw-2,ph-2);
+ y+=ph+30;
+ // 시 전문
+ c('오늘의 기분 · '+state.mood.label,"500 16px "+SANS,28);
+ c('— 오늘 당신에게 도착한 시 —',"700 17px "+SANS,44);
+ fit('「'+poem.title+'」',34,"{px}px "+TITLE,52);
+ var lines=poem.text.split('\n'),longest=0;
+ ctx.font="700 25px "+SERIF;lines.forEach(function(l){longest=Math.max(longest,ctx.measureText(l).width);});
+ var psize=longest>W-P*2?23:25,plh=Math.round(psize*1.62);
+ lines.forEach(function(l){if(!l.trim()){y+=Math.round(plh*.45);return;}var y0=y;wrap(l,"700 {px}px "+SERIF,psize,plh);if(y-y0>plh)y+=Math.round(plh*.32);});   // 긴 줄이 나뉘면 원래 행 사이를 조금 띄움
+ y+=10;c(poem.poet,"700 20px "+SERIF,42);
+ divider();y+=12;
+ // 필사 칸
+ var ix=W/2-148,iy=y+3;ctx.save();ctx.lineWidth=2.4;ctx.beginPath();ctx.moveTo(ix,iy+22);ctx.lineTo(ix+20,iy+2);ctx.lineTo(ix+26,iy+8);ctx.lineTo(ix+6,iy+28);ctx.closePath();ctx.stroke();
+ ctx.beginPath();ctx.moveTo(ix,iy+22);ctx.lineTo(ix-3,iy+31);ctx.lineTo(ix+6,iy+28);ctx.fill();ctx.restore();
+ ctx.font="700 26px "+SERIF;ctx.textAlign='center';ctx.fillText('마음에 남는 한 줄 필사',W/2+18,y);y+=42;
+ c('시에서 마음에 남는 한 줄을 골라 따라 써 보세요',"500 17px "+SANS,40);
+ for(var i=0;i<COPY_LINES;i++){y+=58;ctx.save();ctx.lineWidth=1.8;ctx.beginPath();ctx.moveTo(P+10,y);ctx.lineTo(W-P-10,y);ctx.stroke();ctx.restore();}
+ y+=26;ctx.textAlign='right';ctx.font="500 17px "+SANS;ctx.fillText('필사한 사람  ________________',W-P-10,y);ctx.textAlign='center';y+=72;
+ // 오늘의 행운 한 줄
+ var bx=P+6,bw=W-P*2-12,bt=y;
+ ctx.font="40px "+PEN;var lkLines=[state.lucky];
+ var lpx=38;for(;lpx>=28;lpx--){ctx.font=lpx+"px "+PEN;if(ctx.measureText(state.lucky).width<=bw-36)break;}
+ if(lpx<28){lpx=34;ctx.font=lpx+"px "+PEN;lkLines=semanticLines(state.lucky,bw-36,function(t){return ctx.measureText(t).width;});}
+ var bh=78+lkLines.length*Math.round(lpx*1.25);
+ ctx.save();ctx.lineWidth=2;ctx.setLineDash([3,5]);ctx.strokeRect(bx,bt,bw,bh);ctx.restore();
+ ctx.save();ctx.lineWidth=1.2;ctx.strokeRect(bx+6,bt+6,bw-12,bh-12);ctx.restore();
+ ctx.fillStyle='#fff';ctx.fillRect(W/2-120,bt-14,240,28);ctx.fillStyle='#000';
+ star(W/2-104,bt,7,true);star(W/2+104,bt,7,true);
+ ctx.font="700 18px "+SERIF;ctx.textAlign='center';ctx.fillText('오늘의 행운 한 줄',W/2,bt-12);
+ y=bt+40;ctx.font=lpx+"px "+PEN;lkLines.forEach(function(l){ctx.fillText(l,W/2,y);y+=Math.round(lpx*1.25);});
+ y=bt+bh+30;
+ // 맺음
+ c('Merry Christmas & Happy New Year',"36px "+SCRIPT,48);
+ fit(CREDIT,30,"{px}px "+TITLE,46);
+ snowDots();y+=10;
+ var out=document.createElement('canvas');out.width=W;out.height=y;out.getContext('2d').drawImage(tmp,0,0);
+ return out;
+}
+
+/* 영수증 이미지를 ESC/POS 비트맵으로 바꾸고, 끝에 용지 이송 + 자동 자르기 명령을 붙입니다. */
+function escposBytes(canvas){
+ var w=canvas.width,h=canvas.height,px=canvas.getContext('2d').getImageData(0,0,w,h).data;
+ var bw=Math.ceil(w/8),BAND=200,bands=Math.ceil(h/BAND);
+ var out=new Uint8Array(5+bands*8+bw*h+7),p=0;
+ function put(){for(var i=0;i<arguments.length;i++)out[p++]=arguments[i];}
+ put(0x1B,0x40,0x1B,0x61,0x00);
+ for(var y0=0;y0<h;y0+=BAND){
+  var bh=Math.min(BAND,h-y0);
+  put(0x1D,0x76,0x30,0x00,bw&255,bw>>8,bh&255,bh>>8);
+  for(var y=y0;y<y0+bh;y++){
+   for(var bx=0;bx<bw;bx++){
+    var b=0;
+    for(var k=0;k<8;k++){
+     var x=bx*8+k;if(x>=w)continue;
+     var i=(y*w+x)*4,lum=px[i]*0.299+px[i+1]*0.587+px[i+2]*0.114;
+     if(px[i+3]>0&&lum<160)b|=0x80>>k;
+    }
+    out[p++]=b;
+   }
+  }
+ }
+ put(0x1B,0x64,FEED_LINES);
+ put(0x1D,0x56,CUT_MODE,0x00);
+ return out.subarray(0,p);
+}
+function bytesToHex(bytes){var h=new Array(bytes.length);for(var i=0;i<bytes.length;i++)h[i]=(bytes[i]<16?'0':'')+bytes[i].toString(16);return h.join('');}
+
+/* ---- Fully Kiosk 블루투스 직접 출력 ---- */
+function fullyApi(){
+ try{if(typeof fully!=='undefined'&&fully&&typeof fully.btSendHexData==='function')return fully;}catch(e){}
+ try{if(window.top&&window.top.fully&&typeof window.top.fully.btSendHexData==='function')return window.top.fully;}catch(e){}
+ return null;
+}
+function findPrinter(f){
+ var list=[];
+ try{list=JSON.parse(f.btGetDeviceListJson()||'[]');}catch(e){}
+ if(!Array.isArray(list)){var arr=[];for(var key in list)arr.push(list[key]);list=arr;}
+ function nameOf(d){return String(d&&(d.name||d.deviceName)||'');}
+ var want=PRINTER_NAME?[PRINTER_NAME]:['CPP','Printer','POS','RPP','BT'];
+ for(var i=0;i<want.length;i++)for(var j=0;j<list.length;j++)if(nameOf(list[j]).toUpperCase().indexOf(want[i].toUpperCase())>-1)return list[j];
+ return list.length===1?list[0]:null;
+}
+function fullyConnect(f,done){
+ try{if(f.btIsConnected()){done(true);return;}}catch(e){}
+ var dev=findPrinter(f);
+ if(!dev){done(false,'페어링된 영수증 프린터를 찾지 못했습니다. 태블릿 블루투스 설정에서 프린터를 먼저 연결해 주세요.');return;}
+ try{if(dev.address||dev.mac)f.btOpenByMac(dev.address||dev.mac);else f.btOpenByName(dev.name||dev.deviceName);}
+ catch(e){done(false,'프린터 연결에 실패했습니다.');return;}
+ var t0=Date.now();
+ (function wait(){
+  var ok=false;try{ok=f.btIsConnected();}catch(e){}
+  if(ok){done(true);return;}
+  if(Date.now()-t0>8000){done(false,'프린터에 연결하지 못했습니다. 프린터 전원과 블루투스를 확인해 주세요.');return;}
+  setTimeout(wait,200);
+ })();
+}
+function fullySend(f,bytes,done){
+ var hex=bytesToHex(bytes),CH=8192,pos=0;
+ (function next(){
+  if(pos>=hex.length){done(true);return;}
+  var ok=false;try{ok=f.btSendHexData(hex.substr(pos,CH));}catch(e){}
+  if(ok===false){done(false);return;}
+  pos+=CH;setTimeout(next,40);
+ })();
+}
+
+/* ---------------- 출력 ---------------- */
+var printing=false;
+$('printBtn').onclick=function(){
+ if(printing||!state.receipt)return;
+ var hint=$('hint'),canvas=state.receipt,bytes,f=fullyApi();
+ clearTimeout(homeTimer);
+ if(f){
+  try{bytes=escposBytes(canvas);}catch(e){hint.textContent='출력 준비에 실패했어요. 다시 시도해 주세요.';return;}
+  printing=true;$('printBtn').disabled=true;hint.textContent='시 선물을 출력하고 있어요…';
+  fullyConnect(f,function(ok,msg){
+   if(!ok){printing=false;$('printBtn').disabled=false;hint.textContent=msg;return;}
+   fullySend(f,bytes,function(sent){
+    printing=false;$('printBtn').disabled=false;
+    hint.textContent=sent?'영수증이 나오면 가져가세요. 메리 포엠스마스!':'전송 중 연결이 끊겼어요. 버튼을 다시 눌러 주세요.';
+    if(!sent){try{f.btClose();}catch(e){}}
+    if(sent)scheduleHome();
+   });
+  });
+  return;
+ }
+ printViaDialog(canvas,hint);scheduleHome();
+};
+function scheduleHome(){clearTimeout(homeTimer);homeTimer=setTimeout(resetAll,AUTO_HOME_SEC*1000);}
+function receiptPageCss(canvas){
+ var hmm=Math.ceil(canvas.height/canvas.width*72)+2;
+ return '@page{size:80mm '+hmm+'mm;margin:0}html,body{margin:0!important;padding:0!important;background:#fff!important}img.rcptimg{width:72mm;display:block;margin:0 auto}';
+}
+function printViaDialog(canvas,hint){
+ var url=canvas.toDataURL('image/png'),css=receiptPageCss(canvas);
+ var st=$('receiptPageStyle');
+ if(!st){st=document.createElement('style');st.id='receiptPageStyle';document.head.appendChild(st);}
+ st.textContent='@media print{'+css+'.app,.snow{display:none!important}#printArea{display:block!important}}';
+ $('printArea').innerHTML='<img class="rcptimg" alt="" src="'+url+'">';
+ hint.textContent='인쇄 창에서 영수증 프린터를 고르고 [인쇄]를 눌러 주세요.';
+ var old=$('altLink');if(old)old.remove();
+ var b=document.createElement('button');b.id='altLink';b.type='button';b.className='btn sec';b.style.minHeight='48px';
+ b.textContent='인쇄 창이 안 뜨면 여기를 눌러 주세요';
+ b.onclick=function(){printInNewWindow(url,css,hint);};
+ $('toPrint').appendChild(b);
+ var img=$('printArea').querySelector('img');
+ var go=function(){setTimeout(function(){try{window.print();}catch(e){printInNewWindow(url,css,hint);}},80);};
+ if(img.complete)go();else{img.onload=go;img.onerror=go;}
+}
+function printInNewWindow(url,css,hint){
+ var w=null;try{w=window.open('','_blank');}catch(e){}
+ if(!w){hint.textContent='새 창이 막혀 있어요. 브라우저의 팝업 허용을 켜 주세요.';return;}
+ w.document.open();
+ w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>메리 포엠스마스</title><style>'+css+'</style></head><body><img class="rcptimg" src="'+url+'" onload="setTimeout(function(){window.print()},100)"></body></html>');
+ w.document.close();
+}
+
+updateSnap();
+startCamera();
+</script>
+</body>
+</html>
