@@ -6,7 +6,7 @@
 <title>메리 포엠스마스</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Song+Myung&family=Gowun+Batang:wght@400;700&family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;500;700&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Song+Myung&family=Gowun+Batang:wght@400;700&family=Nanum+Pen+Script&family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#f8ebe7; --paper:#fffaf8; --ink:#2e1d1b; --muted:#8a625c;
@@ -66,10 +66,10 @@ main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.2fr) minm
 /* right */
 .body{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:12px;padding-right:2px}
 .moods{display:grid;grid-template-columns:1fr 1fr;gap:9px;flex:1;min-height:0;grid-auto-rows:1fr}
-.mood{border:2px solid var(--line);background:#fff;border-radius:12px;padding:6px 12px;text-align:left;display:flex;flex-direction:column;justify-content:center;gap:2px;color:var(--ink);transition:border-color .15s,background .15s,transform .1s;min-height:54px}
+.mood{border:2px solid var(--line);background:#fff;border-radius:12px;padding:6px 12px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--ink);transition:border-color .15s,background .15s,transform .1s;min-height:54px}
 .mood:active{transform:scale(.98)}
-.mood b{font-family:var(--serif);font-weight:700;font-size:clamp(17px,1.7vw,22px)}
-.mood span{font-size:clamp(12px,1.1vw,14px);color:var(--muted);line-height:1.35}
+.mood b{font-family:'Gaegu',var(--pen);font-weight:700;font-size:clamp(23px,2.3vw,30px);line-height:1.1}
+.mood span{font-family:'Gaegu',var(--pen);font-size:clamp(15px,1.45vw,19px);color:var(--muted);line-height:1.25;word-break:keep-all;letter-spacing:-.02em}
 .mood.on{border-color:var(--red);background:#fde8e4}
 .mood.on b{color:var(--red-d)}
 .result{display:flex;flex-direction:column;gap:12px}
