@@ -1279,6 +1279,23 @@ function drawReceipt(){
   ctx.beginPath();ctx.arc(cx,top-s*.02,s*.06,0,7);ctx.fill();
   ctx.restore();
  }
+ function bookIcon(cx,cy,s){   // 펼친 책 (s=너비)
+  var hw=s/2,h=s*.72,t=cy-h/2;ctx.save();ctx.lineWidth=Math.max(2.4,s*.09);ctx.lineJoin='round';
+  ctx.strokeRect(cx-hw,t,hw,h);ctx.strokeRect(cx,t,hw,h);
+  ctx.lineWidth=Math.max(2,s*.075);ctx.beginPath();
+  for(var k=1;k<=3;k++){var ly=t+h*k/4.2+h*.06;ctx.moveTo(cx-hw*.74,ly);ctx.lineTo(cx-hw*.24,ly);ctx.moveTo(cx+hw*.24,ly);ctx.lineTo(cx+hw*.74,ly);}
+  ctx.stroke();ctx.restore();
+ }
+ function ribbon(cx,cy,s){   // 리본 (s=너비)
+  ctx.save();ctx.lineWidth=2.6;ctx.lineJoin='round';ctx.fillStyle='#fff';
+  [-1,1].forEach(function(d){   // 고리 두 개
+   ctx.beginPath();ctx.moveTo(cx,cy);ctx.bezierCurveTo(cx+d*s*.2,cy-s*.42,cx+d*s*.62,cy-s*.38,cx+d*s*.5,cy-s*.02);
+   ctx.bezierCurveTo(cx+d*s*.46,cy+s*.2,cx+d*s*.2,cy+s*.14,cx,cy);ctx.closePath();ctx.fill();ctx.stroke();
+   ctx.beginPath();ctx.moveTo(cx+d*s*.1,cy-s*.04);ctx.quadraticCurveTo(cx+d*s*.3,cy-s*.2,cx+d*s*.38,cy-s*.06);ctx.stroke();
+   ctx.beginPath();ctx.moveTo(cx+d*s*.06,cy+s*.06);ctx.lineTo(cx+d*s*.28,cy+s*.5);ctx.lineTo(cx+d*s*.16,cy+s*.44);ctx.lineTo(cx+d*s*.1,cy+s*.54);ctx.lineTo(cx-d*s*.01,cy+s*.08);ctx.closePath();ctx.fill();ctx.stroke();   // 꼬리
+  });
+  ctx.fillStyle='#000';ctx.beginPath();ctx.ellipse(cx,cy,s*.1,s*.12,0,0,7);ctx.fill();ctx.restore();
+ }
  function star(cx,cy,r,fill){ctx.beginPath();for(var i=0;i<10;i++){var a=-Math.PI/2+i*Math.PI/5,rr=i%2?r*.42:r;ctx.lineTo(cx+Math.cos(a)*rr,cy+Math.sin(a)*rr);}ctx.closePath();if(fill)ctx.fill();else{ctx.lineWidth=1.8;ctx.stroke();}}
  function sparkle(cx,cy,r){ctx.beginPath();ctx.moveTo(cx,cy-r);ctx.quadraticCurveTo(cx,cy,cx+r,cy);ctx.quadraticCurveTo(cx,cy,cx,cy+r);ctx.quadraticCurveTo(cx,cy,cx-r,cy);ctx.quadraticCurveTo(cx,cy,cx,cy-r);ctx.fill();}
  function ornament(cx,cy,r,kind){
@@ -1306,10 +1323,10 @@ function drawReceipt(){
  y+=14;   /* 구분선 삭제 */
  // 시 전문
  (function(){   // 양옆 선물 상자 그림 + '오늘 당신에게 도착한 시'
-  var t='당신에게 도착한 시',px=56;ctx.font=px+"px "+BRUSH;var tw=ctx.measureText(t).width;
-  while(tw+2*62>W-P*2&&px>36){px--;ctx.font=px+"px "+BRUSH;tw=ctx.measureText(t).width;}
+  var t='당신에게 도착한 시',px=45;ctx.font=px+"px "+BRUSH;var tw=ctx.measureText(t).width;   /* 캘리그라피 20% 작게 (56→45) */
+  while(tw+2*70>W-P*2&&px>30){px--;ctx.font=px+"px "+BRUSH;tw=ctx.measureText(t).width;}
   ctx.textAlign='center';ctx.fillText(t,W/2,y);
-  var gy=y+px*.46;ornament(W/2-tw/2-32,gy,15,0);ornament(W/2+tw/2+32,gy,15,0);y+=83;   /* 글자 아래 간격 30% 늘림 */})();
+  var gy=y+px*.5;ribbon(W/2-tw/2-38,gy,40);ribbon(W/2+tw/2+38,gy,40);y+=78;   /* 글자 아래 간격 30% 늘림 */})();
  fit('「'+poem.title+'」',36,"900 {px}px "+SERIF,58);
  var lines=poem.text.split('\n'),longest=0;
  ctx.font="700 26px "+SERIF;lines.forEach(function(l){longest=Math.max(longest,ctx.measureText(l).width);});
@@ -1323,30 +1340,27 @@ function drawReceipt(){
  ctx.font="900 27px "+SERIF;ctx.textAlign='center';ctx.fillText('마음에 남는 한 줄 필사',W/2+18,y);y+=44;
  c('시에서 마음에 남는 한 줄을 골라 따라 써 보세요',"700 19px "+SERIF,40);
  for(var i=0;i<COPY_LINES;i++){y+=70;/* 밑줄 간격: 58에서 20% 늘림 */ctx.save();ctx.lineWidth=1.8;ctx.beginPath();ctx.moveTo(P+10,y);ctx.lineTo(W-P-10,y);ctx.stroke();ctx.restore();}
- y+=64;   /* '필사한 사람' 줄은 삭제함 */
+ y+=48;   /* '필사한 사람' 줄은 삭제함 */
  // 오늘의 행운 한 줄
  var bx=P+6,bw=W-P*2-12,bt=y;
  var LUCKY_FONT=BRUSH;var lkLines=[state.lucky];
- var lpx=50;for(;lpx>=38;lpx--){ctx.font=lpx+"px "+LUCKY_FONT;if(ctx.measureText(state.lucky).width<=bw-40)break;}
- if(lpx<38){lpx=46;ctx.font=lpx+"px "+LUCKY_FONT;lkLines=semanticLines(state.lucky,bw-40,function(t){return ctx.measureText(t).width;});}
- var bh=70+lkLines.length*Math.round(lpx*1.15);
- ctx.save();ctx.lineWidth=2;ctx.setLineDash([3,5]);ctx.strokeRect(bx,bt,bw,bh);ctx.restore();
- ctx.save();ctx.lineWidth=1.2;ctx.strokeRect(bx+6,bt+6,bw-12,bh-12);ctx.restore();
- ctx.font="700 42px "+HAND;var lbw=ctx.measureText('오늘의 행운 한 줄').width;
- ctx.fillStyle='#fff';ctx.fillRect(W/2-lbw/2-40,bt-24,lbw+80,48);ctx.fillStyle='#000';
- star(W/2-lbw/2-22,bt,9,true);star(W/2+lbw/2+22,bt,9,true);
- ctx.textAlign='center';ctx.fillText('오늘의 행운 한 줄',W/2,bt-24);
- y=bt+44;ctx.font=lpx+"px "+LUCKY_FONT;lkLines.forEach(function(l){ctx.fillText(l,W/2,y);y+=Math.round(lpx*1.15);});
- y=bt+bh+40;
+ var lpx=40;for(;lpx>=30;lpx--){ctx.font=lpx+"px "+LUCKY_FONT;if(ctx.measureText(state.lucky).width<=bw-40)break;}   /* 캘리그라피 20% 작게 (50→40) */
+ if(lpx<30){lpx=37;ctx.font=lpx+"px "+LUCKY_FONT;lkLines=semanticLines(state.lucky,bw-40,function(t){return ctx.measureText(t).width;});}
+ /* 행운 한 줄: 상자와 제목 없이 캘리그라피 글씨만 사진 위에 */
+ y=bt;ctx.textAlign='center';ctx.font=lpx+"px "+LUCKY_FONT;lkLines.forEach(function(l){ctx.fillText(l,W/2,y);y+=Math.round(lpx*1.15);});
+ y+=18;
  // 사진
  var pw=W-P*2-16,ph=Math.round(pw*PHOTO_H/PHOTO_W),px=(W-pw)/2;y+=8;
  ctx.save();ctx.lineWidth=1.5;ctx.strokeRect(px-8.5,y-8.5,pw+17,ph+17);ctx.restore();
  ctx.drawImage(ditherPhoto(state.photo,pw,ph),px,y);ctx.lineWidth=2.5;ctx.strokeRect(px+1,y+1,pw-2,ph-2);
  y+=ph+34;
  // 맺음
- c('Merry Christmas & Happy New Year',"36px "+SCRIPT,48);
  if(CREDIT)fit(CREDIT,30,"{px}px "+TITLE,46);
- if(RECEIPT_FOOTER){y+=4;fit(RECEIPT_FOOTER,32,"900 {px}px "+SERIF,48);}
+ if(RECEIPT_FOOTER){   // 📖 수내고등학교 도서관 📖
+  var fpx=32;ctx.font="900 "+fpx+"px "+SERIF;var ftw=ctx.measureText(RECEIPT_FOOTER).width;
+  while(ftw+2*64>W-P*2&&fpx>20){fpx--;ctx.font="900 "+fpx+"px "+SERIF;ftw=ctx.measureText(RECEIPT_FOOTER).width;}
+  var bkw=fpx*1.05,gap=18,x0=W/2-(bkw+gap+ftw)/2;   /* 책 모양은 왼쪽에만, 책+글자를 한가운데로 */
+  bookIcon(x0+bkw/2,y+fpx*.55,bkw);ctx.textAlign='left';ctx.fillText(RECEIPT_FOOTER,x0+bkw+gap,y);ctx.textAlign='center';y+=fpx+26;}
  snowDots();y+=10;
  var out=document.createElement('canvas');out.width=W;out.height=y;out.getContext('2d').drawImage(tmp,0,0);
  return out;
